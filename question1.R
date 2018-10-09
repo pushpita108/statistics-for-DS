@@ -1,7 +1,11 @@
+#install.packages("pylr")
+#install.packages("ggplot2")
 library(plyr)
+library(ggplot2) 
 
 file<-'/Users/pushpitapanigrahi/Desktop/PushpitaFiles/Study/4.StatsForDS/Proj1/Selected/networkbnbTX.txt'
 #file<- "D:/UTD/Academics/Fourth Sem/Stats for Data Science - Cuneyt/Project1/Token Graphs/networkbnbTX.txt"
+
 col_names <- c("FROMNODE","TONODE","TIME","TOKENAMOUNT")
 mydata <- read.csv( file, header = FALSE, sep = " ", dec = ".", col.names = col_names)
 amounts <- mydata[4]
@@ -10,30 +14,32 @@ totalSupply <- 192443301
 subUnits <- 18
 totalAmount <- totalSupply * (10 ^ subUnits)
 
-print(totalAmount)
-print(nrow(amounts))
-
+#print meta data 
+message('Maximum allowed amount : ', totalAmount)
 count <- 0
+outliers <- 0
 for( a in 1:nrow(amounts)){
   if( a > totalAmount){
-    print(a)
+    outliers <- outliers + 1
   }
   else{
     count <- count + 1
   }
 }
-print(count)
+message('Number of outliers : ',outliers)
+message('Number of valid amounts : ',count)
 
 
 #graph1
 countFromDf <- count(mydata, "FROMNODE")
-#sort(countDf$freq, decreasing = TRUE)
-#sum(countDf$freq)
-plot(x=countFromDf$FROMNODE, y= countFromDf$freq, main="Number of tokens sold by addresses", sub="Sellers",xlab="FROM NODE", ylab="TOKEN AMOUNT")
+#plot(x=countFromDf$FROMNODE, y= countFromDf$freq, main="Number of tokens sold by addresses", sub="Sellers",xlab="FROM NODE", ylab="Transactiont Count")
+#ggplot(countFromDf, aes(FROMNODE,freq))+geom_point()
+ggplot(countFromDf, aes(FROMNODE,freq))+geom_boxplot()
+
 
 #graph2
 countToDf <- count(mydata, "TONODE")
-plot(x=countToDf$TONODE, y= countToDf$freq, main="Number of tokens bought by addresses", sub="Buyers",xlab="TO NODE", ylab="TOKEN AMOUNT")
+plot(x=countToDf$TONODE, y= countToDf$freq, main="Number of tokens bought by addresses", sub="Buyers",xlab="TO NODE", ylab="Transactiont Count")
 # 
 # g_range <- range(0, mydata$FROMNODE)
 # print(g_range)
