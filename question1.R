@@ -1,4 +1,7 @@
-file<- "D:/UTD/Academics/Fourth Sem/Stats for Data Science - Cuneyt/Project1/Token Graphs/networkbnbTX.txt"
+library(plyr)
+
+file<-'/Users/pushpitapanigrahi/Desktop/PushpitaFiles/Study/4.StatsForDS/Proj1/Selected/networkbnbTX.txt'
+#file<- "D:/UTD/Academics/Fourth Sem/Stats for Data Science - Cuneyt/Project1/Token Graphs/networkbnbTX.txt"
 col_names <- c("FROMNODE","TONODE","TIME","TOKENAMOUNT")
 mydata <- read.csv( file, header = FALSE, sep = " ", dec = ".", col.names = col_names)
 amounts <- mydata[4]
@@ -21,13 +24,16 @@ for( a in 1:nrow(amounts)){
 }
 print(count)
 
+
 #graph1
-sells <- mydata[1]
-plot(x=mydata$FROMNODE, y= mydata$TOKENAMOUNT, main="Number of tokens sold by addresses", sub="Sellers",xlab="FROM NODE", ylab="TOKEN AMOUNT")
+countFromDf <- count(mydata, "FROMNODE")
+#sort(countDf$freq, decreasing = TRUE)
+#sum(countDf$freq)
+plot(x=countFromDf$FROMNODE, y= countFromDf$freq, main="Number of tokens sold by addresses", sub="Sellers",xlab="FROM NODE", ylab="TOKEN AMOUNT")
 
 #graph2
-buys <- mydata[2]
-plot(x=mydata$TONODE, y= mydata$TOKENAMOUNT, main="Number of tokens bought by addresses", sub="Buyers",xlab="TO NODE", ylab="TOKEN AMOUNT")
+countToDf <- count(mydata, "TONODE")
+plot(x=countToDf$TONODE, y= countToDf$freq, main="Number of tokens bought by addresses", sub="Buyers",xlab="TO NODE", ylab="TOKEN AMOUNT")
 # 
 # g_range <- range(0, mydata$FROMNODE)
 # print(g_range)
