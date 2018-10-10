@@ -3,8 +3,8 @@
 library(plyr)
 library(ggplot2) 
 
-file<-'/Users/pushpitapanigrahi/Desktop/PushpitaFiles/Study/4.StatsForDS/Proj1/Selected/networkbnbTX.txt'
-#file<- "D:/UTD/Academics/Fourth Sem/Stats for Data Science - Cuneyt/Project1/Token Graphs/networkbnbTX.txt"
+#file<-'/Users/pushpitapanigrahi/Desktop/PushpitaFiles/Study/4.StatsForDS/Proj1/Selected/networkbnbTX.txt'
+file<- "D:/UTD/Academics/Fourth Sem/Stats for Data Science - Cuneyt/Project1/Token Graphs/networkbnbTX.txt"
 
 col_names <- c("FROMNODE","TONODE","TIME","TOKENAMOUNT")
 mydata <- read.csv( file, header = FALSE, sep = " ", dec = ".", col.names = col_names)
@@ -31,15 +31,25 @@ message('Number of valid amounts : ',count)
 
 
 #graph1
-countFromDf <- count(mydata, "FROMNODE")
+countFromDf <- count(mydata, FROMNODE)
 #plot(x=countFromDf$FROMNODE, y= countFromDf$freq, main="Number of tokens sold by addresses", sub="Sellers",xlab="FROM NODE", ylab="Transactiont Count")
-#ggplot(countFromDf, aes(FROMNODE,freq))+geom_point()
-ggplot(countFromDf, aes(FROMNODE,freq))+geom_boxplot()
-
+#ggplot(countFromDf, aes(n,FROMNODE))+geom_point()
+#ggplot(countFromDf, aes(FROMNODE,freq))+geom_boxplot()
+countFromFf <- count(countFromDf, n)
+ggplot(countFromFf, aes(x= n))+geom_density() +xlab("Frequency") +ylab("Number of Seller (Density)")
+# gg <- countFromDf %>%
+#   dplyr::select(FROMNODE,n) %>%
+#   group_by(n) %>%
+#   summarise(NumNodes = sum(FROMNODE))
+# 
+# gg
 
 #graph2
-countToDf <- count(mydata, "TONODE")
-plot(x=countToDf$TONODE, y= countToDf$freq, main="Number of tokens bought by addresses", sub="Buyers",xlab="TO NODE", ylab="Transactiont Count")
+countToDf <- count(mydata, TONODE)
+countToFf <- count(countToDf, n)
+ggplot(countToDf, aes(x= n))+geom_density() +xlab("Frequency") +ylab("Number of Buyers (Density)")
+
+#plot(x=countToDf$TONODE, y= countToDf$freq, main="Number of tokens bought by addresses", sub="Buyers",xlab="TO NODE", ylab="Transactiont Count")
 # 
 # g_range <- range(0, mydata$FROMNODE)
 # print(g_range)
