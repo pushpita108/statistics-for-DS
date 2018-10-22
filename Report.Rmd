@@ -1,5 +1,6 @@
 ---
 title: "Report"
+author: "pushpita panigrahi(pxp171530), akash chand(axc173730), siddharth swarup panda(ssp171730)"
 output: html_document
 ---
 
@@ -8,7 +9,27 @@ knitr::opts_chunk$set(echo = TRUE)
 library(plyr)
 library(ggplot2) 
 library(fitdistrplus)
+require(plyr)
 ```
+## Read the token data
+
+We chose networkbnbTX token as our dataset. 
+```{r}
+file <-'/Users/pushpitapanigrahi/Desktop/PushpitaFiles/GitHub/statistics-for-DS/networkbnbTX.txt'
+col_names <- c("FROMNODE","TONODE","DATE","TOKENAMOUNT")
+mydata <- read.csv( file, header = FALSE, sep = " ", dec = ".", col.names = col_names)
+mydata$DATE <- as.Date(as.POSIXct(as.numeric(mydata$DATE), origin = '1970-01-01', tz = 'GMT'))
+
+amounts <- mydata[4]
+
+totalSupply <- 192443301
+subUnits <- 18
+totalAmount <- totalSupply * (10 ^ subUnits)
+
+head(mydata)
+```
+
+
 
 ## Preprocessing
 
@@ -17,14 +38,6 @@ The preprocessing step involves removal of fraudulent transactions which might a
 The token networkbnb does not have any fraudulent transactions.
 
 ```{r}
-file <-'B:/study/Fall 2018/Stats for DS/Project1/Datasets/Ethereum token graphs/networkbnbTX.txt'
-col_names <- c("FROMNODE","TONODE","TIME","TOKENAMOUNT")
-mydata <- read.csv( file, header = FALSE, sep = " ", dec = ".", col.names = col_names)
-amounts <- mydata[4]
-
-totalSupply <- 192443301
-subUnits <- 18
-totalAmount <- totalSupply * (10 ^ subUnits)
 temp <- which(mydata< totalAmount)
 #print meta data 
 message('Maximum allowed amount : ', totalAmount)
@@ -42,7 +55,7 @@ message('Number of outliers : ',outliers)
 message('Number of valid amounts : ',count)
 ```
 
-## Calculating selling frequency
+## Calculating and plotting selling frequency
 
 ```{r pressure, echo=FALSE}
 countFromDf <- count(mydata, "FROMNODE")
@@ -62,13 +75,17 @@ distributionFit_Seller_ln <- fitdist(countFromFf$Sell_Count, "lnorm", method ="m
 distributionFit_Seller_gm <- fitdist(countFromFf$Sell_Count, "gamma" ,method="mme")
 distributionFit_Seller_wb
 plot(distributionFit_Seller_wb)
+
 distributionFit_Seller_pois
 plot(distributionFit_Seller_pois)
+
 distributionFit_Seller_ln
 plot(distributionFit_Seller_ln)
+
 distributionFit_Seller_gm
 plot(distributionFit_Seller_gm)
 ```
+
 ##Calculating the buying frequency
 ```{r}
 countToDf <- count(mydata, "TONODE")
@@ -86,12 +103,44 @@ distributionFit_Buyer_gm <- fitdist(countToFf$Buy_Count, "gamma", method ="mme")
 
 distributionFit_Buyer_pois
 plot(distributionFit_Buyer_pois)
+
 distributionFit_Buyer_wb
 plot(distributionFit_Buyer_wb)
+
 distributionFit_Buyer_ln
 plot(distributionFit_Buyer_ln)
+
 distributionFit_Buyer_gm
 plot(distributionFit_Buyer_gm)
 ```
 
 ##Conclusion
+From the above graph estimates, both buy and sell frequency for our dataset follows LOG-NORMAL distribution as the standard error is least and the emperical distribution curve follows the theoritical distribution curve most accurately.
+
+```{r}
+head(mydata)
+
+pricefile <-'/Users/pushpitapanigrahi/Desktop/PushpitaFiles/GitHub/statistics-for-DS/bnb.txt'
+col_names <- c("Date","Open","High","Low","Close","Volume","MarketCap")
+myPrices <- read.csv( pricefile , header = TRUE, sep = "\t", dec = ".", col.names = col_names)
+myPrices$Date <- format(as.Date(myPrices$Date, format = "%m/%d/%Y"), "%Y-%m-%d")
+head(myPrices)
+```
+```{r}
+timeBuyFreq <- ddply(mydata, .(DATE), mutate, count = length(unique(TONODE)))
+timeBuyFreq <- subset(timeBuyFreq, select=c("DATE", "count"))
+timeBuyFreq$DATE <- as.Date(timeBuyFreq$DATE, "%Y-%m-%d")
+timeBuyFreq <- unique(timeBuyFreq)
+head(timeBuyFreq)
+
+timePrices <- subset(myPrices, select=c("Date","Open"))
+timePrices$Date <- as.Date(timePrices$Date, "%Y-%m-%d")
+timePrices <- unique(timePrices)
+head(timePrices)
+
+```
+
+```{r}
+merge(x=timePrices, y=timeBuyFreq, by.x=c("Date"), by.y = c("DATE"))
+```
+
