@@ -10,6 +10,7 @@ library(plyr)
 library(ggplot2) 
 library(fitdistrplus)
 require(plyr)
+library(grid)
 ```
 ## Read the token data
 
@@ -117,30 +118,77 @@ plot(distributionFit_Buyer_gm)
 ##Conclusion
 From the above graph estimates, both buy and sell frequency for our dataset follows LOG-NORMAL distribution as the standard error is least and the emperical distribution curve follows the theoritical distribution curve most accurately.
 
-```{r}
-head(mydata)
+##Study 2 : 
+We are trying to find the correlation between the unique number if buyers each day to the token opening price for the day. 
 
+##Read the price file 
+Price file contains details of the open, clase, max and min price for the token foe each day
+```{r}
 pricefile <-'/Users/pushpitapanigrahi/Desktop/PushpitaFiles/GitHub/statistics-for-DS/bnb.txt'
 col_names <- c("Date","Open","High","Low","Close","Volume","MarketCap")
 myPrices <- read.csv( pricefile , header = TRUE, sep = "\t", dec = ".", col.names = col_names)
 myPrices$Date <- format(as.Date(myPrices$Date, format = "%m/%d/%Y"), "%Y-%m-%d")
 head(myPrices)
 ```
+
+##Studying distribution of the opening price . 
+The see the pattern for opening price values each day for BNB token. We do not see any outliers in this data.
+```{r}
+timePrices <- subset(myPrices, select=c("Date","Open"))
+timePrices$Date <- as.Date(timePrices$Date, "%Y-%m-%d")
+timePrices <- unique(timePrices)
+summary(timePrices)
+plot(timePrices$Date, timePrices$Open, main = "Opening prices VS date", xlab = "Date", ylab="Open price")
+```
+
+##Studying the distribution of number of unique buyers each day. 
+We see outliers in this data. 
 ```{r}
 timeBuyFreq <- ddply(mydata, .(DATE), mutate, count = length(unique(TONODE)))
 timeBuyFreq <- subset(timeBuyFreq, select=c("DATE", "count"))
 timeBuyFreq$DATE <- as.Date(timeBuyFreq$DATE, "%Y-%m-%d")
 timeBuyFreq <- unique(timeBuyFreq)
-head(timeBuyFreq)
-
-timePrices <- subset(myPrices, select=c("Date","Open"))
-timePrices$Date <- as.Date(timePrices$Date, "%Y-%m-%d")
-timePrices <- unique(timePrices)
-head(timePrices)
-
+summary(timeBuyFreq)
+outliers <- boxplot(timeBuyFreq$count, main="Unique buyer count distribution", ylab="unique buyer count")$out
 ```
+
+We see the summary of the outliers and plot the data with and without the outliers.
+```{r}
+summary(outliers)
+plot( timeBuyFreq$DATE, timeBuyFreq$count ,ylim=c(0, 633), main = "Unique buyer count VS date", xlab = "Date", ylab="Unique buyer count")
+```
+
+##Combine opening price and unique buyer count for each day
+We remove the outliers are merge the price and buyer counts to find the pearson correlation between the two fields with each day being a layer.
+```{r}
+remove_outliers <- function(x, na.rm = TRUE, ...) {
+  qnt <- quantile(x, probs=c(.25, .75), na.rm = na.rm, ...)
+  H <- 2.5 * IQR(x, na.rm = na.rm)
+  y <- x
+  y[x < (qnt[1] - H)] <- NA
+  y[x > (qnt[2] + H)] <- NA
+  y
+}
+
+priceSellForEachDay <- merge(x=timePrices, y=timeBuyFreq, by.x=c("Date"), by.y = c("DATE"))
+head(priceSellForEachDay)
+newSet <- remove_outliers(priceSellForEachDay$count)
+maxCount = max(newSet[complete.cases(newSet)])
+minCount = min(newSet[complete.cases(newSet)])
+priceSellForEachDay <- subset(priceSellForEachDay, count<maxCount & count>minCount)
+cor(priceSellForEachDay$Open, priceSellForEachDay$count, method=c("pearson"))
+```
+## Conclusion
+We find a very strong positive correlation between the number of people buying BNB token in a day to the price of the token that day. So we combine both plots to visualize the correlation. 
 
 ```{r}
-merge(x=timePrices, y=timeBuyFreq, by.x=c("Date"), by.y = c("DATE"))
+#' Create the two plots.
+p1 <- ggplot(priceSellForEachDay, aes(Date, count)) + geom_line() + theme_minimal() + 
+      theme(axis.title.x = element_blank(), axis.text.x = element_blank())
+p2 <- ggplot(priceSellForEachDay,aes(Date, Open)) + geom_bar(stat="identity") + theme_minimal() + 
+      theme(axis.title.x = element_blank(),axis.text.x = element_text(angle=90))
+grid.newpage()
+grid.draw(rbind(ggplotGrob(p1), ggplotGrob(p2), size = "last"))
 ```
+
 
