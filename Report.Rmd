@@ -1,7 +1,9 @@
 ---
 title: "Report"
 author: "pushpita panigrahi(pxp171530), akash chand(axc173730), siddharth swarup panda(ssp171730)"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -16,7 +18,7 @@ library(grid)
 
 We chose networkbnbTX token as our dataset. 
 ```{r}
-file <-'/Users/pushpitapanigrahi/Desktop/PushpitaFiles/GitHub/statistics-for-DS/networkbnbTX.txt'
+file <-'networkbnbTX.txt'
 col_names <- c("FROMNODE","TONODE","DATE","TOKENAMOUNT")
 mydata <- read.csv( file, header = FALSE, sep = " ", dec = ".", col.names = col_names)
 mydata$DATE <- as.Date(as.POSIXct(as.numeric(mydata$DATE), origin = '1970-01-01', tz = 'GMT'))
@@ -124,7 +126,7 @@ We are trying to find the correlation between the unique number if buyers each d
 ##Read the price file 
 Price file contains details of the open, clase, max and min price for the token foe each day
 ```{r}
-pricefile <-'/Users/pushpitapanigrahi/Desktop/PushpitaFiles/GitHub/statistics-for-DS/bnb.txt'
+pricefile <-'bnb.txt'
 col_names <- c("Date","Open","High","Low","Close","Volume","MarketCap")
 myPrices <- read.csv( pricefile , header = TRUE, sep = "\t", dec = ".", col.names = col_names)
 myPrices$Date <- format(as.Date(myPrices$Date, format = "%m/%d/%Y"), "%Y-%m-%d")
@@ -190,5 +192,59 @@ p2 <- ggplot(priceSellForEachDay,aes(Date, Open)) + geom_bar(stat="identity") + 
 grid.newpage()
 grid.draw(rbind(ggplotGrob(p1), ggplotGrob(p2), size = "last"))
 ```
+
+```{r}
+#getting the unique users in the current token
+buyers <- unique(mydata$TONODE) 
+sellers <- unique(mydata$FROMNODE)
+buyers <- append(buyers, sellers)
+buyers <- data.frame(unique(buyers))
+colnames(buyers) <- c("USERS")
+
+#reading all the data from other tokens into a single dataframe
+col_names <- c("FROMNODE","TONODE","DATE","TOKENAMOUNT")
+fpath<-"B:/study/Fall 2018/Stats for DS/Project1/Datasets/Ethereum token graphs/"
+files <- list.files(path=fpath, pattern="*.txt", full.names=TRUE, recursive=FALSE)
+dataframe_list <- list()
+t <- data.frame(read.csv( files[i], header = FALSE, sep = " ", dec = ".", col.names = col_names))
+dataframe_list[[1]] <- t
+for(i in 2:length(files)){
+  t <- data.frame(read.csv( files[i], header = FALSE, sep = " ", dec = ".", col.names = col_names))
+  dataframe_list[[i]] <- t
+}
+
+
+```
+
+```{r}
+df <- ldply(dataframe_list, data.frame)
+length(df$FROMNODE)
+```
+
+```{r}
+coName <- c("FROMNODE", "COUNT")
+x <- table(df$FROMNODE[df$FROMNODE %in% buyers$USERS]) # counting the occurances of the users in the TONODE column of other tokens
+sellerData <- data.frame(x)
+colnames(sellerData)<-coName
+head(sellerData)
+
+```
+
+```{r}
+buycoName <- c("TONODE", "COUNT")
+x <- table(df$TONODE[df$TONODE %in% buyers$USERS]) # counting the occurances of the users in the FROMNODE column of other tokens
+buyerData <- data.frame(x)
+colnames(buyerData)<-buycoName
+head(buyerData)
+
+```
+
+```{r}
+nrow(buyers)
+nrow(buyerData)
+nrow(sellerData)
+
+```
+
 
 

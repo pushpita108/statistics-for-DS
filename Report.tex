@@ -1,0 +1,679 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Report},
+            pdfauthor={pushpita panigrahi(pxp171530), akash chand(axc173730), siddharth swarup panda(ssp171730)},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Report}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{pushpita panigrahi(pxp171530), akash chand(axc173730), siddharth swarup
+panda(ssp171730)}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+    \date{}
+    \predate{}\postdate{}
+  
+
+\begin{document}
+\maketitle
+
+\subsection{Read the token data}\label{read-the-token-data}
+
+We chose networkbnbTX token as our dataset.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{file <-}\StringTok{'networkbnbTX.txt'}
+\NormalTok{col_names <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"FROMNODE"}\NormalTok{,}\StringTok{"TONODE"}\NormalTok{,}\StringTok{"DATE"}\NormalTok{,}\StringTok{"TOKENAMOUNT"}\NormalTok{)}
+\NormalTok{mydata <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{( file, }\DataTypeTok{header =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{sep =} \StringTok{" "}\NormalTok{, }\DataTypeTok{dec =} \StringTok{"."}\NormalTok{, }\DataTypeTok{col.names =}\NormalTok{ col_names)}
+\NormalTok{mydata}\OperatorTok{$}\NormalTok{DATE <-}\StringTok{ }\KeywordTok{as.Date}\NormalTok{(}\KeywordTok{as.POSIXct}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(mydata}\OperatorTok{$}\NormalTok{DATE), }\DataTypeTok{origin =} \StringTok{'1970-01-01'}\NormalTok{, }\DataTypeTok{tz =} \StringTok{'GMT'}\NormalTok{))}
+
+\NormalTok{amounts <-}\StringTok{ }\NormalTok{mydata[}\DecValTok{4}\NormalTok{]}
+
+\NormalTok{totalSupply <-}\StringTok{ }\DecValTok{192443301}
+\NormalTok{subUnits <-}\StringTok{ }\DecValTok{18}
+\NormalTok{totalAmount <-}\StringTok{ }\NormalTok{totalSupply }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{10} \OperatorTok{^}\StringTok{ }\NormalTok{subUnits)}
+
+\KeywordTok{head}\NormalTok{(mydata)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   FROMNODE  TONODE       DATE  TOKENAMOUNT
+## 1       82 1443996 2018-04-24 4.071000e+19
+## 2       82 1443997 2018-04-24 2.291000e+19
+## 3        5 1443998 2018-04-24 2.297303e+18
+## 4  1443999 1444000 2018-04-24 8.740000e+18
+## 5       44 1444001 2018-04-24 1.180000e+18
+## 6        5 1444002 2018-04-24 3.276959e+20
+\end{verbatim}
+
+\subsection{Preprocessing}\label{preprocessing}
+
+The preprocessing step involves removal of fraudulent transactions which
+might affect the distribution estimate negatively. The total supply of
+the networkbnb token is 192443301 (quoted from etherscan.io) and the
+range of subunits for the token is 18 decimal units. Thus any
+transaction that attempts to log a value greater than the product of
+total supply and subunits is deemed as fraudulent.
+
+The token networkbnb does not have any fraudulent transactions.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{temp <-}\StringTok{ }\KeywordTok{which}\NormalTok{(mydata}\OperatorTok{<}\StringTok{ }\NormalTok{totalAmount)}
+\CommentTok{#print meta data }
+\KeywordTok{message}\NormalTok{(}\StringTok{'Maximum allowed amount : '}\NormalTok{, totalAmount)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Maximum allowed amount : 1.92443301e+26
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{count <-}\StringTok{ }\DecValTok{0}
+\NormalTok{outliers <-}\StringTok{ }\DecValTok{0}
+\ControlFlowTok{for}\NormalTok{( a }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{nrow}\NormalTok{(amounts))\{}
+  \ControlFlowTok{if}\NormalTok{( a }\OperatorTok{>}\StringTok{ }\NormalTok{totalAmount)\{}
+\NormalTok{    outliers <-}\StringTok{ }\NormalTok{outliers }\OperatorTok{+}\StringTok{ }\DecValTok{1}
+\NormalTok{  \}}
+  \ControlFlowTok{else}\NormalTok{\{}
+\NormalTok{    count <-}\StringTok{ }\NormalTok{count }\OperatorTok{+}\StringTok{ }\DecValTok{1}
+\NormalTok{  \}}
+\NormalTok{\}}
+\KeywordTok{message}\NormalTok{(}\StringTok{'Number of outliers : '}\NormalTok{,outliers)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Number of outliers : 0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{message}\NormalTok{(}\StringTok{'Number of valid amounts : '}\NormalTok{,count)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Number of valid amounts : 357142
+\end{verbatim}
+
+\subsection{Calculating and plotting selling
+frequency}\label{calculating-and-plotting-selling-frequency}
+
+\begin{verbatim}
+## Using freq as weighting variable
+\end{verbatim}
+
+\begin{verbatim}
+##   Users_Count Sell_Count
+## 1           1      16575
+## 2           2       3962
+## 3           3       2115
+## 4           4       1284
+## 5           5        870
+## 6           6        702
+\end{verbatim}
+
+\includegraphics{Report_files/figure-latex/pressure-1.pdf}
+
+\begin{verbatim}
+## summary statistics
+## ------
+## min:  65   max:  34809 
+## median:  399 
+## mean:  994.8245 
+## estimated sd:  2931.883 
+## estimated skewness:  7.48285 
+## estimated kurtosis:  68.98622
+\end{verbatim}
+
+\subsection{Approximating the selling
+distributions}\label{approximating-the-selling-distributions}
+
+From the above Cullen and Frey graph we could narrow down our
+distribution selection to Weibull, lognormal, gamma and poisson.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{distributionFit_Seller_pois <-}\StringTok{ }\KeywordTok{fitdist}\NormalTok{(countFromFf}\OperatorTok{$}\NormalTok{Sell_Count, }\StringTok{"pois"}\NormalTok{, }\DataTypeTok{method =}\StringTok{"mle"}\NormalTok{)}
+\NormalTok{distributionFit_Seller_wb <-}\StringTok{ }\KeywordTok{fitdist}\NormalTok{(countFromFf}\OperatorTok{$}\NormalTok{Sell_Count, }\StringTok{"weibull"}\NormalTok{, }\DataTypeTok{method =}\StringTok{"mle"}\NormalTok{)}
+\NormalTok{distributionFit_Seller_ln <-}\StringTok{ }\KeywordTok{fitdist}\NormalTok{(countFromFf}\OperatorTok{$}\NormalTok{Sell_Count, }\StringTok{"lnorm"}\NormalTok{, }\DataTypeTok{method =}\StringTok{"mle"}\NormalTok{)}
+\NormalTok{distributionFit_Seller_gm <-}\StringTok{ }\KeywordTok{fitdist}\NormalTok{(countFromFf}\OperatorTok{$}\NormalTok{Sell_Count, }\StringTok{"gamma"}\NormalTok{ ,}\DataTypeTok{method=}\StringTok{"mme"}\NormalTok{)}
+\NormalTok{distributionFit_Seller_wb}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Fitting of the distribution ' weibull ' by maximum likelihood 
+## Parameters:
+##          estimate  Std. Error
+## shape   0.7719378  0.02515483
+## scale 774.1209761 56.42896598
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(distributionFit_Seller_wb)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{distributionFit_Seller_pois}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Fitting of the distribution ' pois ' by maximum likelihood 
+## Parameters:
+##        estimate Std. Error
+## lambda 994.8245   1.664616
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(distributionFit_Seller_pois)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-3-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{distributionFit_Seller_ln}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Fitting of the distribution ' lnorm ' by maximum likelihood 
+## Parameters:
+##          estimate Std. Error
+## meanlog 6.1329835 0.04809244
+## sdlog   0.9112216 0.03400630
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(distributionFit_Seller_ln)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-3-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{distributionFit_Seller_gm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Fitting of the distribution ' gamma ' by matching moments 
+## Parameters:
+##           estimate
+## shape 0.1154545321
+## rate  0.0001160552
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(distributionFit_Seller_gm)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-3-4.pdf}
+
+\subsection{Calculating the buying
+frequency}\label{calculating-the-buying-frequency}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{countToDf <-}\StringTok{ }\KeywordTok{count}\NormalTok{(mydata, }\StringTok{"TONODE"}\NormalTok{)}
+\NormalTok{countToFf <-}\StringTok{ }\KeywordTok{count}\NormalTok{(countToDf, }\StringTok{"freq"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Using freq as weighting variable
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{colnames}\NormalTok{(countToFf) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Users_Count"}\NormalTok{, }\StringTok{"Buy_Count"}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(countToFf)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Users_Count Buy_Count
+## 1           1    252994
+## 2           2     56706
+## 3           3     16029
+## 4           4      5184
+## 5           5      2240
+## 6           6      1452
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{descdist}\NormalTok{(countToFf}\OperatorTok{$}\NormalTok{Buy_Count, }\DataTypeTok{boot=}\DecValTok{500}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+\begin{verbatim}
+## summary statistics
+## ------
+## min:  24   max:  252994 
+## median:  117.5 
+## mean:  6157.621 
+## estimated sd:  33890.53 
+## estimated skewness:  7.076031 
+## estimated kurtosis:  54.78311
+\end{verbatim}
+
+\subsection{Approximating the buying
+distributions}\label{approximating-the-buying-distributions}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{distributionFit_Buyer_pois <-}\StringTok{ }\KeywordTok{fitdist}\NormalTok{(countToFf}\OperatorTok{$}\NormalTok{Buy_Count, }\StringTok{"pois"}\NormalTok{, }\DataTypeTok{method =}\StringTok{"mle"}\NormalTok{)}
+\NormalTok{distributionFit_Buyer_wb <-}\StringTok{ }\KeywordTok{fitdist}\NormalTok{(countToFf}\OperatorTok{$}\NormalTok{Buy_Count, }\StringTok{"weibull"}\NormalTok{, }\DataTypeTok{method =}\StringTok{"mle"}\NormalTok{)}
+\NormalTok{distributionFit_Buyer_ln <-}\StringTok{ }\KeywordTok{fitdist}\NormalTok{(countToFf}\OperatorTok{$}\NormalTok{Buy_Count, }\StringTok{"lnorm"}\NormalTok{, }\DataTypeTok{method =}\StringTok{"mle"}\NormalTok{)}
+\NormalTok{distributionFit_Buyer_gm <-}\StringTok{ }\KeywordTok{fitdist}\NormalTok{(countToFf}\OperatorTok{$}\NormalTok{Buy_Count, }\StringTok{"gamma"}\NormalTok{, }\DataTypeTok{method =}\StringTok{"mme"}\NormalTok{)}
+
+\NormalTok{distributionFit_Buyer_pois}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Fitting of the distribution ' pois ' by maximum likelihood 
+## Parameters:
+##        estimate Std. Error
+## lambda 6157.621   10.26635
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(distributionFit_Buyer_pois)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{distributionFit_Buyer_wb}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Fitting of the distribution ' weibull ' by maximum likelihood 
+## Parameters:
+##          estimate   Std. Error
+## shape   0.3913615   0.03285488
+## scale 595.1275712 213.11455385
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(distributionFit_Buyer_wb)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-5-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{distributionFit_Buyer_ln}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Fitting of the distribution ' lnorm ' by maximum likelihood 
+## Parameters:
+##         estimate Std. Error
+## meanlog 5.323868  0.2432331
+## sdlog   1.852408  0.1719915
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(distributionFit_Buyer_ln)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-5-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{distributionFit_Buyer_gm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Fitting of the distribution ' gamma ' by matching moments 
+## Parameters:
+##           estimate
+## shape 3.359095e-02
+## rate  5.455183e-06
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(distributionFit_Buyer_gm)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-5-4.pdf}
+
+\subsection{Conclusion}\label{conclusion}
+
+From the above graph estimates, both buy and sell frequency for our
+dataset follows LOG-NORMAL distribution as the standard error is least
+and the emperical distribution curve follows the theoritical
+distribution curve most accurately.
+
+\subsection{Study 2 :}\label{study-2}
+
+We are trying to find the correlation between the unique number if
+buyers each day to the token opening price for the day.
+
+\subsection{Read the price file}\label{read-the-price-file}
+
+Price file contains details of the open, clase, max and min price for
+the token foe each day
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pricefile <-}\StringTok{'bnb.txt'}
+\NormalTok{col_names <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Date"}\NormalTok{,}\StringTok{"Open"}\NormalTok{,}\StringTok{"High"}\NormalTok{,}\StringTok{"Low"}\NormalTok{,}\StringTok{"Close"}\NormalTok{,}\StringTok{"Volume"}\NormalTok{,}\StringTok{"MarketCap"}\NormalTok{)}
+\NormalTok{myPrices <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{( pricefile , }\DataTypeTok{header =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{sep =} \StringTok{"}\CharTok{\textbackslash{}t}\StringTok{"}\NormalTok{, }\DataTypeTok{dec =} \StringTok{"."}\NormalTok{, }\DataTypeTok{col.names =}\NormalTok{ col_names)}
+\NormalTok{myPrices}\OperatorTok{$}\NormalTok{Date <-}\StringTok{ }\KeywordTok{format}\NormalTok{(}\KeywordTok{as.Date}\NormalTok{(myPrices}\OperatorTok{$}\NormalTok{Date, }\DataTypeTok{format =} \StringTok{"%m/%d/%Y"}\NormalTok{), }\StringTok{"%Y-%m-%d"}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(myPrices)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         Date  Open  High   Low Close     Volume     MarketCap
+## 1 2018-07-04 14.23 14.33 13.91 14.01 37,043,700 1,622,370,000
+## 2 2018-07-03 14.56 14.78 14.08 14.17 60,657,300 1,660,830,000
+## 3 2018-07-02 14.40 14.82 14.06 14.57 55,614,000 1,641,930,000
+## 4 2018-07-01 14.68 14.69 14.14 14.40 38,434,400 1,673,690,000
+## 5 2018-06-30 14.55 15.18 14.29 14.66 59,676,900 1,659,200,000
+## 6 2018-06-29 14.17 14.65 13.78 14.51 52,784,600 1,616,460,000
+\end{verbatim}
+
+\subsection{Studying distribution of the opening price
+.}\label{studying-distribution-of-the-opening-price-.}
+
+The see the pattern for opening price values each day for BNB token. We
+do not see any outliers in this data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{timePrices <-}\StringTok{ }\KeywordTok{subset}\NormalTok{(myPrices, }\DataTypeTok{select=}\KeywordTok{c}\NormalTok{(}\StringTok{"Date"}\NormalTok{,}\StringTok{"Open"}\NormalTok{))}
+\NormalTok{timePrices}\OperatorTok{$}\NormalTok{Date <-}\StringTok{ }\KeywordTok{as.Date}\NormalTok{(timePrices}\OperatorTok{$}\NormalTok{Date, }\StringTok{"%Y-%m-%d"}\NormalTok{)}
+\NormalTok{timePrices <-}\StringTok{ }\KeywordTok{unique}\NormalTok{(timePrices)}
+\KeywordTok{summary}\NormalTok{(timePrices)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       Date                 Open         
+##  Min.   :2017-07-25   Min.   : 0.09972  
+##  1st Qu.:2017-10-19   1st Qu.: 1.58000  
+##  Median :2018-01-13   Median : 8.94000  
+##  Mean   :2018-01-13   Mean   : 7.75033  
+##  3rd Qu.:2018-04-09   3rd Qu.:13.14000  
+##  Max.   :2018-07-04   Max.   :22.77000
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(timePrices}\OperatorTok{$}\NormalTok{Date, timePrices}\OperatorTok{$}\NormalTok{Open, }\DataTypeTok{main =} \StringTok{"Opening prices VS date"}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{"Date"}\NormalTok{, }\DataTypeTok{ylab=}\StringTok{"Open price"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+\subsection{Studying the distribution of number of unique buyers each
+day.}\label{studying-the-distribution-of-number-of-unique-buyers-each-day.}
+
+We see outliers in this data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{timeBuyFreq <-}\StringTok{ }\KeywordTok{ddply}\NormalTok{(mydata, .(DATE), mutate, }\DataTypeTok{count =} \KeywordTok{length}\NormalTok{(}\KeywordTok{unique}\NormalTok{(TONODE)))}
+\NormalTok{timeBuyFreq <-}\StringTok{ }\KeywordTok{subset}\NormalTok{(timeBuyFreq, }\DataTypeTok{select=}\KeywordTok{c}\NormalTok{(}\StringTok{"DATE"}\NormalTok{, }\StringTok{"count"}\NormalTok{))}
+\NormalTok{timeBuyFreq}\OperatorTok{$}\NormalTok{DATE <-}\StringTok{ }\KeywordTok{as.Date}\NormalTok{(timeBuyFreq}\OperatorTok{$}\NormalTok{DATE, }\StringTok{"%Y-%m-%d"}\NormalTok{)}
+\NormalTok{timeBuyFreq <-}\StringTok{ }\KeywordTok{unique}\NormalTok{(timeBuyFreq)}
+\KeywordTok{summary}\NormalTok{(timeBuyFreq)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       DATE                count          
+##  Min.   :2017-07-07   Min.   :     3.00  
+##  1st Qu.:2017-09-20   1st Qu.:    53.75  
+##  Median :2017-12-05   Median :   148.00  
+##  Mean   :2017-12-05   Mean   :  1025.48  
+##  3rd Qu.:2018-02-19   3rd Qu.:   236.50  
+##  Max.   :2018-05-06   Max.   :117595.00
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{outliers <-}\StringTok{ }\KeywordTok{boxplot}\NormalTok{(timeBuyFreq}\OperatorTok{$}\NormalTok{count, }\DataTypeTok{main=}\StringTok{"Unique buyer count distribution"}\NormalTok{, }\DataTypeTok{ylab=}\StringTok{"unique buyer count"}\NormalTok{)}\OperatorTok{$}\NormalTok{out}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+We see the summary of the outliers and plot the data with and without
+the outliers.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(outliers)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##     570    1118    1746   10785    3600  117595
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{( timeBuyFreq}\OperatorTok{$}\NormalTok{DATE, timeBuyFreq}\OperatorTok{$}\NormalTok{count ,}\DataTypeTok{ylim=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{633}\NormalTok{), }\DataTypeTok{main =} \StringTok{"Unique buyer count VS date"}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{"Date"}\NormalTok{, }\DataTypeTok{ylab=}\StringTok{"Unique buyer count"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\subsection{Combine opening price and unique buyer count for each
+day}\label{combine-opening-price-and-unique-buyer-count-for-each-day}
+
+We remove the outliers are merge the price and buyer counts to find the
+pearson correlation between the two fields with each day being a layer.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{remove_outliers <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{, ...) \{}
+\NormalTok{  qnt <-}\StringTok{ }\KeywordTok{quantile}\NormalTok{(x, }\DataTypeTok{probs=}\KeywordTok{c}\NormalTok{(.}\DecValTok{25}\NormalTok{, .}\DecValTok{75}\NormalTok{), }\DataTypeTok{na.rm =}\NormalTok{ na.rm, ...)}
+\NormalTok{  H <-}\StringTok{ }\FloatTok{2.5} \OperatorTok{*}\StringTok{ }\KeywordTok{IQR}\NormalTok{(x, }\DataTypeTok{na.rm =}\NormalTok{ na.rm)}
+\NormalTok{  y <-}\StringTok{ }\NormalTok{x}
+\NormalTok{  y[x }\OperatorTok{<}\StringTok{ }\NormalTok{(qnt[}\DecValTok{1}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{H)] <-}\StringTok{ }\OtherTok{NA}
+\NormalTok{  y[x }\OperatorTok{>}\StringTok{ }\NormalTok{(qnt[}\DecValTok{2}\NormalTok{] }\OperatorTok{+}\StringTok{ }\NormalTok{H)] <-}\StringTok{ }\OtherTok{NA}
+\NormalTok{  y}
+\NormalTok{\}}
+
+\NormalTok{priceSellForEachDay <-}\StringTok{ }\KeywordTok{merge}\NormalTok{(}\DataTypeTok{x=}\NormalTok{timePrices, }\DataTypeTok{y=}\NormalTok{timeBuyFreq, }\DataTypeTok{by.x=}\KeywordTok{c}\NormalTok{(}\StringTok{"Date"}\NormalTok{), }\DataTypeTok{by.y =} \KeywordTok{c}\NormalTok{(}\StringTok{"DATE"}\NormalTok{))}
+\KeywordTok{head}\NormalTok{(priceSellForEachDay)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         Date     Open count
+## 1 2017-07-25 0.115203    16
+## 2 2017-07-26 0.105893     8
+## 3 2017-07-27 0.105108    16
+## 4 2017-07-28 0.107632    13
+## 5 2017-07-29 0.104782     3
+## 6 2017-07-30 0.107935     3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{newSet <-}\StringTok{ }\KeywordTok{remove_outliers}\NormalTok{(priceSellForEachDay}\OperatorTok{$}\NormalTok{count)}
+\NormalTok{maxCount =}\StringTok{ }\KeywordTok{max}\NormalTok{(newSet[}\KeywordTok{complete.cases}\NormalTok{(newSet)])}
+\NormalTok{minCount =}\StringTok{ }\KeywordTok{min}\NormalTok{(newSet[}\KeywordTok{complete.cases}\NormalTok{(newSet)])}
+\NormalTok{priceSellForEachDay <-}\StringTok{ }\KeywordTok{subset}\NormalTok{(priceSellForEachDay, count}\OperatorTok{<}\NormalTok{maxCount }\OperatorTok{&}\StringTok{ }\NormalTok{count}\OperatorTok{>}\NormalTok{minCount)}
+\KeywordTok{cor}\NormalTok{(priceSellForEachDay}\OperatorTok{$}\NormalTok{Open, priceSellForEachDay}\OperatorTok{$}\NormalTok{count, }\DataTypeTok{method=}\KeywordTok{c}\NormalTok{(}\StringTok{"pearson"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.7335533
+\end{verbatim}
+
+\subsection{Conclusion}\label{conclusion-1}
+
+We find a very strong positive correlation between the number of people
+buying BNB token in a day to the price of the token that day. So we
+combine both plots to visualize the correlation.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#' Create the two plots.}
+\NormalTok{p1 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(priceSellForEachDay, }\KeywordTok{aes}\NormalTok{(Date, count)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_line}\NormalTok{() }\OperatorTok{+}\StringTok{ }\KeywordTok{theme_minimal}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{      }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.title.x =} \KeywordTok{element_blank}\NormalTok{(), }\DataTypeTok{axis.text.x =} \KeywordTok{element_blank}\NormalTok{())}
+\NormalTok{p2 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(priceSellForEachDay,}\KeywordTok{aes}\NormalTok{(Date, Open)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{stat=}\StringTok{"identity"}\NormalTok{) }\OperatorTok{+}\StringTok{ }\KeywordTok{theme_minimal}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{      }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.title.x =} \KeywordTok{element_blank}\NormalTok{(),}\DataTypeTok{axis.text.x =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{angle=}\DecValTok{90}\NormalTok{))}
+\KeywordTok{grid.newpage}\NormalTok{()}
+\KeywordTok{grid.draw}\NormalTok{(}\KeywordTok{rbind}\NormalTok{(}\KeywordTok{ggplotGrob}\NormalTok{(p1), }\KeywordTok{ggplotGrob}\NormalTok{(p2), }\DataTypeTok{size =} \StringTok{"last"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-11-1.pdf}
+
+
+\end{document}
