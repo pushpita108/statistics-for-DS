@@ -206,11 +206,16 @@ col_names <- c("FROMNODE","TONODE","DATE","TOKENAMOUNT")
 fpath<-"B:/study/Fall 2018/Stats for DS/Project1/Datasets/Ethereum token graphs/"
 files <- list.files(path=fpath, pattern="*.txt", full.names=TRUE, recursive=FALSE)
 dataframe_list <- list()
-t <- data.frame(read.csv( files[i], header = FALSE, sep = " ", dec = ".", col.names = col_names))
+t <- data.frame(read.csv( files[1], header = FALSE, sep = " ", dec = ".", col.names = col_names))
 dataframe_list[[1]] <- t
 for(i in 2:length(files)){
   t <- data.frame(read.csv( files[i], header = FALSE, sep = " ", dec = ".", col.names = col_names))
-  dataframe_list[[i]] <- t
+  tusers <- unique(t$FROMNODE)
+  tbuyusers <- unique(t$TONODE)
+  tusers <- append(tusers, tbuyusers)
+  tusers <- data.frame(tusers)
+  colnames(tusers)<-c("TOKENUSERS")
+  dataframe_list[[i]] <- tusers
 }
 
 
@@ -223,16 +228,17 @@ length(df$FROMNODE)
 
 ```{r}
 coName <- c("FROMNODE", "COUNT")
-x <- table(df$FROMNODE[df$FROMNODE %in% buyers$USERS]) # counting the occurances of the users in the TONODE column of other tokens
+x <- table(df$TOKENUSERS[df$TOKENUSERS %in% buyers$USERS]) # counting the occurances of the users in the TONODE column of other tokens
 sellerData <- data.frame(x)
 colnames(sellerData)<-coName
 head(sellerData)
-
+maxVal<-  function(sellerData) sapply(sellerData, max, na.rm = TRUE)
+maxVal
 ```
 
 ```{r}
 buycoName <- c("TONODE", "COUNT")
-x <- table(df$TONODE[df$TONODE %in% buyers$USERS]) # counting the occurances of the users in the FROMNODE column of other tokens
+x <- table(df$TOKENUSERS[df$TOKENUSERS %in% buyers$USERS]) # counting the occurances of the users in the FROMNODE column of other tokens
 buyerData <- data.frame(x)
 colnames(buyerData)<-buycoName
 head(buyerData)
