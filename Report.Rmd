@@ -195,15 +195,25 @@ grid.draw(rbind(ggplotGrob(p1), ggplotGrob(p2), size = "last"))
 
 ```{r}
 #getting the unique users in the current token
-buyers <- unique(mydata$TONODE) 
-sellers <- unique(mydata$FROMNODE)
-buyers <- append(buyers, sellers)
-buyers <- data.frame(unique(buyers))
-colnames(buyers) <- c("USERS")
 
+#buyers <- unique(mydata$TONODE) 
+#sellers <- unique(mydata$FROMNODE)
+#buyers <- append(buyers, sellers)
+#buyers <- data.frame(unique(buyers))
+#colnames(buyers) <- c("USERS")
+buyers1 <- (mydata$TONODE) 
+
+sellers1 <- (mydata$FROMNODE)
+
+buyers12 <- append(buyers1, sellers1)
+buyers12 <- data.frame(buyers12)
+colnames(buyers12) <- c("USERS")
+usersFreq <- count(buyers12, "USERS")
+meanFreq <- mean(usersFreq$freq)
+activeUsers <- usersFreq[(usersFreq$freq>meanFreq),]
 #reading all the data from other tokens into a single dataframe
 col_names <- c("FROMNODE","TONODE","DATE","TOKENAMOUNT")
-fpath<-"B:/study/Fall 2018/Stats for DS/Project1/Datasets/Ethereum token graphs/"
+fpath<-"D:/GitHub Projects/statistics-for-DS/Token Graphs/"
 files <- list.files(path=fpath, pattern="*.txt", full.names=TRUE, recursive=FALSE)
 dataframe_list <- list()
 t <- data.frame(read.csv( files[1], header = FALSE, sep = " ", dec = ".", col.names = col_names))
@@ -213,7 +223,7 @@ for(i in 2:length(files)){
   tusers <- unique(t$FROMNODE)
   tbuyusers <- unique(t$TONODE)
   tusers <- append(tusers, tbuyusers)
-  tusers <- data.frame(tusers)
+  tusers <- data.frame(unique(tusers))
   colnames(tusers)<-c("TOKENUSERS")
   dataframe_list[[i]] <- tusers
 }
@@ -224,33 +234,67 @@ for(i in 2:length(files)){
 ```{r}
 df <- ldply(dataframe_list, data.frame)
 length(df$FROMNODE)
+df
 ```
 
 ```{r}
 coName <- c("FROMNODE", "COUNT")
-x <- table(df$TOKENUSERS[df$TOKENUSERS %in% buyers$USERS]) # counting the occurances of the users in the TONODE column of other tokens
+x <- table(df$TOKENUSERS[df$TOKENUSERS %in% activeUsers$USERS]) # counting the occurances of the users in the FROMNODE column of other tokens
 sellerData <- data.frame(x)
 colnames(sellerData)<-coName
-head(sellerData)
-maxVal<-  function(sellerData) sapply(sellerData, max, na.rm = TRUE)
-maxVal
+sellerData
+#sellerData
+#maxVal<-  function(data) sapply(data, max, na.rm = TRUE)
+#val<-max(sellerData$FROMNODE,na.rm = TRUE)
+#val
+val<-apply(sellerData,2,max)
+val
+#mydata
 ```
 
 ```{r}
-buycoName <- c("TONODE", "COUNT")
-x <- table(df$TOKENUSERS[df$TOKENUSERS %in% buyers$USERS]) # counting the occurances of the users in the FROMNODE column of other tokens
-buyerData <- data.frame(x)
-colnames(buyerData)<-buycoName
-head(buyerData)
+# buyers1 <- (mydata$TONODE) 
+# 
+# sellers1 <- (mydata$FROMNODE)
+# 
+# buyers12 <- append(buyers1, sellers1)
+# buyers12 <- data.frame(buyers12)
+# colnames(buyers12) <- c("USERS")
+# usersFreq <- count(buyers12, "USERS")
+# meanFreq <- mean(usersFreq$freq)
+# activeUsers <- usersFreq[(usersFreq$freq>meanFreq),]
+# # usersFreq
+# # meanFreq
+#  activeUsers
+```
+
+```{r}
+#filteredCountData<-subset(sellerData, FROMNODE %in% activeUsers$"USERS")
+countOfFreq <- count(sellerData, "COUNT")
+colnames(countOfFreq) <- c("Users_Count", "Freq_Count")
+descdist(countOfFreq$Freq_Count, boot= 500)
 
 ```
 
 ```{r}
-nrow(buyers)
-nrow(buyerData)
-nrow(sellerData)
+distributionFit_Count_pois <- fitdist(countOfFreq$Freq_Count, "pois", method ="mle")
+distributionFit_Count_wb <- fitdist(countOfFreq$Freq_Count, "weibull", method ="mle")
+distributionFit_Count_ln <- fitdist(countOfFreq$Freq_Count, "lnorm", method ="mle")
+distributionFit_Count_gm <- fitdist(countOfFreq$Freq_Count, "gamma" ,method="mme")
+distributionFit_Count_wb
+plot(distributionFit_Count_wb)
 
+distributionFit_Seller_pois
+plot(distributionFit_Count_pois)
+
+distributionFit_Seller_ln
+plot(distributionFit_Count_ln)
+
+distributionFit_Seller_gm
+plot(distributionFit_Count_gm)
 ```
+
+
 
 
 
