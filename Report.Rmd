@@ -2,8 +2,8 @@
 title: "Report"
 author: "pushpita panigrahi(pxp171530), akash chand(axc173730), siddharth swarup panda(ssp171730)"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -193,107 +193,73 @@ grid.newpage()
 grid.draw(rbind(ggplotGrob(p1), ggplotGrob(p2), size = "last"))
 ```
 
+##Study 3:
+
+##We find the most active users in BNB token and try to fit a distribution for their activities all the tokens all throughout the dataset
+
+We first find out the most active users for our token. Active users are selected as those users who buy/sell BNB token more than the average count of all users buying/selling BNB token. This is done to get enough data points for fitting teh distrbution later on
 ```{r}
-#getting the unique users in the current token
+#getting the active users in the current token
+allUsers <- append(mydata$TONODE, mydata$FROMNODE)
+allUsers <- data.frame(allUsers)
+colnames(allUsers) <- c("USERS")
 
-#buyers <- unique(mydata$TONODE) 
-#sellers <- unique(mydata$FROMNODE)
-#buyers <- append(buyers, sellers)
-#buyers <- data.frame(unique(buyers))
-#colnames(buyers) <- c("USERS")
-buyers1 <- (mydata$TONODE) 
-
-sellers1 <- (mydata$FROMNODE)
-
-buyers12 <- append(buyers1, sellers1)
-buyers12 <- data.frame(buyers12)
-colnames(buyers12) <- c("USERS")
-usersFreq <- count(buyers12, "USERS")
+usersFreq <- count(allUsers, "USERS")
 meanFreq <- mean(usersFreq$freq)
 activeUsers <- usersFreq[(usersFreq$freq>meanFreq),]
-#reading all the data from other tokens into a single dataframe
+```
+
+##Reading all the token data
+We go thorugh all the other tokens and find out how many tokens each user buys/sells
+```{r}
 col_names <- c("FROMNODE","TONODE","DATE","TOKENAMOUNT")
-fpath<-"D:/GitHub Projects/statistics-for-DS/Token Graphs/"
+fpath<-"/Users/pushpitapanigrahi/Desktop/PushpitaFiles/Study/4.StatsForDS/Proj1/Ethereum token graphs"
 files <- list.files(path=fpath, pattern="*.txt", full.names=TRUE, recursive=FALSE)
-dataframe_list <- list()
-t <- data.frame(read.csv( files[1], header = FALSE, sep = " ", dec = ".", col.names = col_names))
-dataframe_list[[1]] <- t
-for(i in 2:length(files)){
+
+uniqueUsersForAllTokens <- list() #For every token a user transacts in, there is one entry of the userId in this list
+for(i in 1:length(files)){
   t <- data.frame(read.csv( files[i], header = FALSE, sep = " ", dec = ".", col.names = col_names))
-  tusers <- unique(t$FROMNODE)
-  tbuyusers <- unique(t$TONODE)
-  tusers <- append(tusers, tbuyusers)
-  tusers <- data.frame(unique(tusers))
-  colnames(tusers)<-c("TOKENUSERS")
-  dataframe_list[[i]] <- tusers
+  tusers <- unique(append(t$FROMNODE, t$TONODE))
+  uniqueUsersForAllTokens <- append(uniqueUsersForAllTokens,tusers)
 }
-
-
+usersFromAllTokens <- do.call(rbind.data.frame, uniqueUsersForAllTokens)
+colnames(usersFromAllTokens)<-c("USERID")
+head(usersFromAllTokens)
 ```
 
 ```{r}
-df <- ldply(dataframe_list, data.frame)
-length(df$FROMNODE)
-df
+# counting the number of tokens per userid
+userTokenCount <- data.frame(table(usersFromAllTokens$USERID[usersFromAllTokens$USERID %in% activeUsers$USERS]))
+colnames(userTokenCount) <-  c("USERID", "COUNT")
+head(userTokenCount)
 ```
 
+##Getting the distribution of unique token counts for the active users
 ```{r}
-coName <- c("FROMNODE", "COUNT")
-x <- table(df$TOKENUSERS[df$TOKENUSERS %in% activeUsers$USERS]) # counting the occurances of the users in the FROMNODE column of other tokens
-sellerData <- data.frame(x)
-colnames(sellerData)<-coName
-sellerData
-#sellerData
-#maxVal<-  function(data) sapply(data, max, na.rm = TRUE)
-#val<-max(sellerData$FROMNODE,na.rm = TRUE)
-#val
-val<-apply(sellerData,2,max)
-val
-#mydata
+freqOfTokenCount <- count(userTokenCount, "COUNT")
+colnames(freqOfTokenCount) <- c("Users_Count", "Freq_Count")
+descdist(freqOfTokenCount$Freq_Count, boot= 500)
 ```
 
+## Fitting the distrubution to find the closest fit
 ```{r}
-# buyers1 <- (mydata$TONODE) 
-# 
-# sellers1 <- (mydata$FROMNODE)
-# 
-# buyers12 <- append(buyers1, sellers1)
-# buyers12 <- data.frame(buyers12)
-# colnames(buyers12) <- c("USERS")
-# usersFreq <- count(buyers12, "USERS")
-# meanFreq <- mean(usersFreq$freq)
-# activeUsers <- usersFreq[(usersFreq$freq>meanFreq),]
-# # usersFreq
-# # meanFreq
-#  activeUsers
-```
+distributionFit_Count_pois <- fitdist(freqOfTokenCount$Freq_Count, "pois", method ="mle")
+distributionFit_Count_wb <- fitdist(freqOfTokenCount$Freq_Count, "weibull", method ="mle")
+distributionFit_Count_ln <- fitdist(freqOfTokenCount$Freq_Count, "lnorm", method ="mle")
+distributionFit_Count_gm <- fitdist(freqOfTokenCount$Freq_Count, "gamma" ,method="mme")
 
-```{r}
-#filteredCountData<-subset(sellerData, FROMNODE %in% activeUsers$"USERS")
-countOfFreq <- count(sellerData, "COUNT")
-colnames(countOfFreq) <- c("Users_Count", "Freq_Count")
-descdist(countOfFreq$Freq_Count, boot= 500)
-
-```
-
-```{r}
-distributionFit_Count_pois <- fitdist(countOfFreq$Freq_Count, "pois", method ="mle")
-distributionFit_Count_wb <- fitdist(countOfFreq$Freq_Count, "weibull", method ="mle")
-distributionFit_Count_ln <- fitdist(countOfFreq$Freq_Count, "lnorm", method ="mle")
-distributionFit_Count_gm <- fitdist(countOfFreq$Freq_Count, "gamma" ,method="mme")
 distributionFit_Count_wb
 plot(distributionFit_Count_wb)
-
 distributionFit_Seller_pois
 plot(distributionFit_Count_pois)
-
 distributionFit_Seller_ln
 plot(distributionFit_Count_ln)
-
 distributionFit_Seller_gm
 plot(distributionFit_Count_gm)
 ```
 
+##Conclusion 
+The number of token is which the most active users appear, follows a poisson distribution in case of BNB token.
 
 
 
