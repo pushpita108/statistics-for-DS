@@ -9,13 +9,6 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-```{r}
-library(plyr)
-library(ggplot2) 
-library(fitdistrplus)
-require(plyr)
-library(grid)
-```
 
 ## Introduction
 
@@ -30,7 +23,7 @@ Ether, a decentralized digital currency, also known as ETH is a cryptocurrency w
 
 ### BNB Token
 We chose Binance coin(networkbnbTX) token as our dataset. There are typically two different types of exchanges: the ones that deal with fiat currency and the ones that deal purely in crypto. The latter one even though they are small now, it is expected that pure crypto exchanges will  have a bigger impact than fiat based exchanges in the
-near future. They will play an ever more important role in world finance and this new paradigm is called as Binance; Binary Finance.
+near future. They will play an ever more important role in world finance and this new paradigm is called as Binance; Binary Finance.
 Features of Binance include :
 1) Safety Stability - Multi-tier & multi-cluster system architecture
 2) High Performance - Capable of processing 1,400,000 orders per second
@@ -43,6 +36,14 @@ Features of Binance include :
 
 ### Data preparation and preprocessing
 The networkbnbTX file is read into a dataframe. We get the total supply and possible sub units of BNB token in market from www.coinmarketcap.com. Token edge files have following row structure: **fromNodeID, toNodeID, unixTime, tokenAmount**. Each row implies that *fromNodeID* sold tokenAmount of the token to *toNodeID* at time *unixTime*. *fromNodeID* and *toNodeID* are ids for people who invest in the token in real life. Each person can use multiple ids and 2 ids can sell/buy tokens multiple times with multiple amounts. This makes our network a weighted, directed, multiedge graph. Below is the sample data from the network file:
+
+```{r}
+library(plyr)
+library(ggplot2) 
+library(fitdistrplus)
+require(plyr)
+library(grid)
+```
 
 ```{r}
 file <-'networkbnbTX.txt'
@@ -259,7 +260,7 @@ activeUsers <- usersFreq[(usersFreq$freq>meanFreq),]
 We go thorugh all the other tokens in given dataset and find out how many tokens each user buys/sells
 ```{r}
 col_names <- c("FROMNODE","TONODE","DATE","TOKENAMOUNT")
-fpath<-"/Users/pushpitapanigrahi/Desktop/PushpitaFiles/Study/4.StatsForDS/Proj1/Ethereum token graphs"
+fpath<-"D:/GitHub Projects/statistics-for-DS/Token Graphs"
 files <- list.files(path=fpath, pattern="*.txt", full.names=TRUE, recursive=FALSE)
 
 uniqueUsersForAllTokens <- list() #For every token a user transacts in, there is one entry of the userId in this list
