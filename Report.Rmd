@@ -1,6 +1,6 @@
 ---
 title: "Report"
-author: "pushpita panigrahi(pxp171530), akash chand(axc173730), siddharth swarup panda(ssp171730)"
+author: "Pushpita Panigrahi(pxp171530), Akash Chand(axc173730), Siddharth Swarup Panda(ssp171730)"
 output:
   pdf_document: default
   html_document: default
