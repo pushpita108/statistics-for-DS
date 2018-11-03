@@ -1,5 +1,5 @@
 ---
-title: "Report"
+title: "Ethereum Token Analysis"
 author: "Pushpita Panigrahi(pxp171530), Akash Chand(axc173730), Siddharth Swarup Panda(ssp171730)"
 output:
   pdf_document: default
