@@ -55,7 +55,7 @@ amounts <- mydata[4]
 totalSupply <- 192443301
 subUnits <- 18
 totalAmount <- totalSupply * (10 ^ subUnits)
-head(mydata)
+#head(mydata)
 ```
  
 The price file for BNB token is read into a dataframe which contains the open, clase, max and min price for the token foe each day. The row structure of the file is **Date, Open, High, Low, Close, Volume, MarketCap**. *Open* and *close* are the prices of the specific token at each day. *Volume* gives total bought/sold tokens and *MarketCap* gives the market valuation at each day. Below is a sample data of the price file: 
@@ -65,7 +65,7 @@ pricefile <-'bnb.txt'
 col_names <- c("Date","Open","High","Low","Close","Volume","MarketCap")
 myPrices <- read.csv( pricefile , header = TRUE, sep = "\t", dec = ".", col.names = col_names)
 myPrices$Date <- format(as.Date(myPrices$Date, format = "%m/%d/%Y"), "%Y-%m-%d")
-head(myPrices)
+#head(myPrices)
 ```
 
 ### Preprocessing
@@ -124,8 +124,8 @@ newSet1 <- remove_outliers(countFromFf$Sell_Count)
 maxCount1 = max(newSet1[complete.cases(newSet1)])
 minCount1 = min(newSet1[complete.cases(newSet1)])
 countFromFf <- subset(countFromFf, Sell_Count<maxCount1 & Sell_Count>minCount1)
-head(countFromFf)
-descdist(countFromFf$Sell_Count, boot= 500, discrete=TRUE)
+#head(countFromFf)
+#descdist(countFromFf$Sell_Count, boot= 500, discrete=TRUE)
 descdist(countFromFf$Sell_Count, boot= 500)
 ```
 
@@ -136,14 +136,14 @@ distributionFit_Seller_pois <- fitdist(countFromFf$Sell_Count, "pois", method ="
 distributionFit_Seller_wb <- fitdist(countFromFf$Sell_Count, "weibull", method ="mle")
 distributionFit_Seller_ln <- fitdist(countFromFf$Sell_Count, "lnorm", method ="mle")
 distributionFit_Seller_gm <- fitdist(countFromFf$Sell_Count, "gamma" ,method="mme")
-distributionFit_Seller_wb$loglik
-plot(distributionFit_Seller_wb)
-distributionFit_Seller_pois$loglik
-plot(distributionFit_Seller_pois)
-distributionFit_Seller_ln$loglik
-plot(distributionFit_Seller_ln)
-distributionFit_Seller_gm$loglik
-plot(distributionFit_Seller_gm)
+#distributionFit_Seller_wb$loglik
+#plot(distributionFit_Seller_wb)
+#distributionFit_Seller_pois$loglik
+#plot(distributionFit_Seller_pois)
+#distributionFit_Seller_ln$loglik
+#plot(distributionFit_Seller_ln)
+#distributionFit_Seller_gm$loglik
+#plot(distributionFit_Seller_gm)
 ```
 
 ### Calculating and plotting buying frequency
@@ -160,8 +160,8 @@ newSet2 <- remove_outliers(countToFf$Buy_Count)
 maxCount2 = max(newSet2[complete.cases(newSet2)])
 minCount2 = min(newSet2[complete.cases(newSet2)])
 countToFf <- subset(countToFf, Buy_Count<maxCount2 & Buy_Count>minCount2)
-descdist(countToFf$Buy_Count, boot= 500, discrete=TRUE)
-descdist(countToFf$Buy_Count, boot=500)
+#descdist(countToFf$Buy_Count, boot= 500, discrete=TRUE, graph=FALSE)
+descdist(countToFf$Buy_Count, boot=500, graph=FALSE)
 ```
 
 ### Approximating the buying distributions
@@ -170,75 +170,19 @@ distributionFit_Buyer_pois <- fitdist(countToFf$Buy_Count, "pois", method ="mle"
 distributionFit_Buyer_wb <- fitdist(countToFf$Buy_Count, "weibull", method ="mle")
 distributionFit_Buyer_ln <- fitdist(countToFf$Buy_Count, "lnorm", method ="mle")
 distributionFit_Buyer_gm <- fitdist(countToFf$Buy_Count, "gamma", method ="mme")
-distributionFit_Buyer_pois$loglik
-plot(distributionFit_Buyer_pois)
-distributionFit_Buyer_wb$loglik
-plot(distributionFit_Buyer_wb)
-distributionFit_Buyer_ln$loglik
-plot(distributionFit_Buyer_ln)
-distributionFit_Buyer_gm$loglik
-plot(distributionFit_Buyer_gm)
+#distributionFit_Buyer_pois$loglik
+#plot(distributionFit_Buyer_pois)
+#distributionFit_Buyer_wb$loglik
+#plot(distributionFit_Buyer_wb)
+#distributionFit_Buyer_ln$loglik
+#plot(distributionFit_Buyer_ln)
+#distributionFit_Buyer_gm$loglik
+#plot(distributionFit_Buyer_gm)
 ```
 
 ### Study 1: Conclusion
 From the above graph estimates, both buy and sell frequency for our dataset follows LOG-NORMAL distribution as the log likelihood value is maximum and standard error is least and the emperical distribution curve follows the theoritical distribution curve for the log-normal graph most accurately.
 
-## Study 2: 
-
-Here the aim is to select a feature and select a criteria for creating layers of transaction and finding the correlation of price data for BNB token among the layers. We find the correlation between the unique number of buyers(feature) in each day(layer) to the token opening price for the day. We select the layers to be a day as that is the minimum division available within the dataset. This study will help understanding the degree of correlation between how user activities model with respect to the opening price of the token in each day. 
-
-### Studying distribution of the opening price . 
-Study the pattern for opening price values on each day for BNB token. We do not see any outliers in this data.
-```{r}
-timePrices <- subset(myPrices, select=c("Date","Open"))
-timePrices$Date <- as.Date(timePrices$Date, "%Y-%m-%d")
-timePrices <- unique(timePrices)
-summary(timePrices)
-plot(timePrices$Date, timePrices$Open, main = "Opening prices VS date", xlab = "Date", ylab="Open price")
-```
-
-### Studying the distribution of number of unique buyers each day. 
-Study the pattern of how many unique buyers are there for our token each day. We see outliers in this data. 
-```{r}
-timeBuyFreq <- ddply(mydata, .(DATE), mutate, count = length(unique(TONODE)))
-timeBuyFreq <- subset(timeBuyFreq, select=c("DATE", "count"))
-timeBuyFreq$DATE <- as.Date(timeBuyFreq$DATE, "%Y-%m-%d")
-timeBuyFreq <- unique(timeBuyFreq)
-summary(timeBuyFreq)
-outliers <- boxplot(timeBuyFreq$count, main="Unique buyer count distribution", ylab="unique buyer count")$out
-```
-
-We see the summary of the outliers and plot the data with and without the outliers.
-```{r}
-summary(outliers)
-plot( timeBuyFreq$DATE, timeBuyFreq$count ,ylim=c(0, 633), main = "Unique buyer count VS date", xlab = "Date", ylab="Unique buyer count")
-```
-
-### Combine opening price and unique buyer count for each day
-We remove the outliers and merge the price and buyer counts to find the pearson correlation between the two fields with each day being a layer.
-```{r}
-priceSellForEachDay <- merge(x=timePrices, y=timeBuyFreq, by.x=c("Date"), by.y = c("DATE"))
-newSet <- remove_outliers(priceSellForEachDay$count)
-maxCount = max(newSet[complete.cases(newSet)])
-minCount = min(newSet[complete.cases(newSet)])
-priceSellForEachDay <- subset(priceSellForEachDay, count<maxCount & count>minCount)
-head(priceSellForEachDay)
-cor(priceSellForEachDay$Open, priceSellForEachDay$count, method=c("pearson"))
-```
-
-### Study 2: Conclusion
-We find a very strong positive correlation between the number of people buying BNB token in a day to the price of the token that day. This menas that user decisions get highly effected by the opening price of bnb token on that day.
-So we combine both plots to visualize the correlation. 
-
-```{r}
-#' Create the two plots.
-p1 <- ggplot(priceSellForEachDay, aes(Date, count)) + geom_line() + theme_minimal() + 
-      theme(axis.title.x = element_blank(), axis.text.x = element_blank())
-p2 <- ggplot(priceSellForEachDay,aes(Date, Open)) + geom_bar(stat="identity") + theme_minimal() + 
-      theme(axis.title.x = element_blank(),axis.text.x = element_text(angle=90))
-grid.newpage()
-grid.draw(rbind(ggplotGrob(p1), ggplotGrob(p2), size = "last"))
-```
 
 ## Study 3:
 
@@ -260,7 +204,7 @@ activeUsers <- usersFreq[(usersFreq$freq>meanFreq),]
 We go thorugh all the other tokens in given dataset and find out how many tokens each user buys/sells
 ```{r}
 col_names <- c("FROMNODE","TONODE","DATE","TOKENAMOUNT")
-fpath<-"D:/GitHub Projects/statistics-for-DS/Token Graphs"
+fpath<-"/Users/pushpitapanigrahi/Desktop/PushpitaFiles/Study/4.StatsForDS/Proj1/Ethereum token graphs"
 files <- list.files(path=fpath, pattern="*.txt", full.names=TRUE, recursive=FALSE)
 
 uniqueUsersForAllTokens <- list() #For every token a user transacts in, there is one entry of the userId in this list
@@ -278,10 +222,10 @@ We now reverse the frequency count, to find how many unique tokens each user id 
 ```{r}
 userTokenCount <- data.frame(table(usersFromAllTokens$USERID[usersFromAllTokens$USERID %in% activeUsers$USERS]))
 colnames(userTokenCount) <-  c("USERID", "COUNT")
-head(userTokenCount)
+#head(userTokenCount)
 freqOfTokenCount <- count(userTokenCount, "COUNT")
 colnames(freqOfTokenCount) <- c("Users_Count", "Freq_Count")
-head(freqOfTokenCount)
+#head(freqOfTokenCount)
 plot(freqOfTokenCount$Users_Count, freqOfTokenCount$Freq_Count)
 ```
 
@@ -292,8 +236,8 @@ newSet3 <- remove_outliers(freqOfTokenCount$Freq_Count)
 maxCount3 = max(newSet3[complete.cases(newSet3)])
 minCount3 = min(newSet3[complete.cases(newSet3)])
 freqOfTokenCount <- subset(freqOfTokenCount, Freq_Count<maxCount3 & Freq_Count>minCount3)
-descdist(freqOfTokenCount$Freq_Count, boot= 500, discrete=TRUE)
-descdist(freqOfTokenCount$Freq_Count, boot= 500)
+#descdist(freqOfTokenCount$Freq_Count, boot= 500, discrete=TRUE, graph=FALSE)
+descdist(freqOfTokenCount$Freq_Count, boot= 500, graph=FALSE)
 ```
 
 ### Fitting the distrubution to find the closest fit
@@ -302,17 +246,127 @@ distributionFit_Count_pois <- fitdist(freqOfTokenCount$Freq_Count, "pois", metho
 distributionFit_Count_wb <- fitdist(freqOfTokenCount$Freq_Count, "weibull", method ="mle")
 distributionFit_Count_ln <- fitdist(freqOfTokenCount$Freq_Count, "lnorm", method ="mle")
 distributionFit_Count_gm <- fitdist(freqOfTokenCount$Freq_Count, "gamma" ,method="mme")
-distributionFit_Count_wb$loglik
-plot(distributionFit_Count_wb)
-distributionFit_Seller_pois$loglik
-plot(distributionFit_Count_pois)
-distributionFit_Seller_ln$loglik
-plot(distributionFit_Count_ln)
-distributionFit_Seller_gm$loglik
-plot(distributionFit_Count_gm)
+#distributionFit_Count_wb$loglik
+#plot(distributionFit_Count_wb)
+#distributionFit_Seller_pois$loglik
+#plot(distributionFit_Count_pois)
+#distributionFit_Seller_ln$loglik
+#plot(distributionFit_Count_ln)
+#distributionFit_Seller_gm$loglik
+#plot(distributionFit_Count_gm)
 ```
 
 ### Study 3: Conclusion 
 From the above graph estimates, the number of unique tokens in our dataset in which the most active users of BNB token transact, follows a weibull distribution as the log likelihood value is maximum, also the emperical distribution curve follows the theoritical distribution curve for the log-normal graph most accurately.
 
+
+
+
+## Study 2: 
+
+Here the aim is to select a feature and select a criteria for creating layers of transaction and finding the correlation of price data for BNB token among the layers. We find the correlation between the unique number of buyers(feature) in each day(layer) to the token opening price for the day. We select the layers to be a day as that is the minimum division available within the dataset. This study will help understanding the degree of correlation between how user activities model with respect to the opening price of the token in each day. 
+
+### Studying distribution of the opening price . 
+Study the pattern for opening price values on each day for BNB token. We do not see any outliers in this data.
+```{r}
+timePrices <- subset(myPrices, select=c("Date","Open", "Close"))
+timePrices$Date <- as.Date(timePrices$Date, "%Y-%m-%d")
+timePrices <- unique(timePrices)
+#summary(timePrices)
+plot(timePrices$Date, timePrices$Open, main = "Opening prices VS date", xlab = "Date", ylab="Open price")
+```
+
+### Studying the distribution of number of unique buyers each day. 
+Study the pattern of how many unique buyers are there for our token each day. We see outliers in this data. 
+```{r}
+timeBuyFreq <- ddply(mydata, .(DATE), mutate, count = length(unique(TONODE)))
+timeBuyFreq <- subset(timeBuyFreq, select=c("DATE", "count"))
+timeBuyFreq$DATE <- as.Date(timeBuyFreq$DATE, "%Y-%m-%d")
+timeBuyFreq <- unique(timeBuyFreq)
+#summary(timeBuyFreq)
+outliers <- boxplot(timeBuyFreq$count, main="Unique buyer count distribution", ylab="unique buyer count")$out
+```
+```{r}
+
+```
+
+We see the summary of the outliers and plot the data with and without the outliers.
+```{r}
+#summary(outliers)
+plot( timeBuyFreq$DATE, timeBuyFreq$count ,ylim=c(0, 633), main = "Unique buyer count VS date", xlab = "Date", ylab="Unique buyer count")
+```
+
+### Combine opening price and unique buyer count for each day
+We remove the outliers and merge the price and buyer counts to find the pearson correlation between the two fields with each day being a layer.
+```{r}
+priceSellForEachDay <- merge(x=timePrices, y=timeBuyFreq, by.x=c("Date"), by.y = c("DATE"))
+newSet <- remove_outliers(priceSellForEachDay$count)
+maxCount = max(newSet[complete.cases(newSet)])
+minCount = min(newSet[complete.cases(newSet)])
+priceSellForEachDay <- subset(priceSellForEachDay, count<maxCount & count>minCount)
+#head(priceSellForEachDay)
+cor(priceSellForEachDay$Open, priceSellForEachDay$count, method=c("pearson"))
+```
+
+### Study 2: Conclusion
+We find a very strong positive correlation between the number of people buying BNB token in a day to the price of the token that day. This menas that user decisions get highly effected by the opening price of bnb token on that day.
+So we combine both plots to visualize the correlation. 
+
+```{r}
+#' Create the two plots.
+p1 <- ggplot(priceSellForEachDay, aes(Date, count)) + geom_line() + theme_minimal() + 
+      theme(axis.title.x = element_blank(), axis.text.x = element_blank())
+p2 <- ggplot(priceSellForEachDay,aes(Date, Open)) + geom_bar(stat="identity") + theme_minimal() + 
+      theme(axis.title.x = element_blank(),axis.text.x = element_text(angle=90))
+grid.newpage()
+grid.draw(rbind(ggplotGrob(p1), ggplotGrob(p2), size = "last"))
+```
+
+### Compare opening price and number of transactions for each day
+```{r}
+timeBuyFreq1 <- ddply(mydata, .(DATE), mutate, count = length(TONODE))
+#head(timeBuyFreq1)
+timeBuyFreq1 <- subset(timeBuyFreq1, select=c("DATE", "count"))
+timeBuyFreq1$DATE <- as.Date(timeBuyFreq1$DATE, "%Y-%m-%d")
+timeBuyFreq1 <- unique(timeBuyFreq1)
+priceSellForEachDay1 <- merge(x=timePrices, y=timeBuyFreq1, by.x=c("Date"), by.y = c("DATE"))
+newSet1 <- remove_outliers(priceSellForEachDay1$count)
+maxCount1 = max(newSet1[complete.cases(newSet1)])
+minCount1 = min(newSet1[complete.cases(newSet1)])
+priceSellForEachDay1 <- subset(priceSellForEachDay1, count<maxCount1 & count>minCount1)
+cor(priceSellForEachDay1$Open, priceSellForEachDay1$count, method=c("pearson"))
+```
+
+
+### Compare opening price and closing price of previous day for each day
+```{r}
+y2=list()
+y2 <- append(y2,0)
+for(i in 2:nrow(priceSellForEachDay)){
+  y2 <- append(y2,priceSellForEachDay$Close[i-1])
+}
+priceSellForEachDay$ClosePrev <- unlist(y2, use.names=FALSE)
+```
+
+### Merge all three regressors, and calculate price return, simple price return is given as  $$P_t − (P_t − 1)/P_t − 1$$
+```{r}
+corDataSet <- merge(x= priceSellForEachDay, y=priceSellForEachDay1, by.x=c("Date"), by.y=c("Date"))
+y=list()
+for(i in 1:nrow(corDataSet)-1){
+  y <- append(y,(corDataSet$Open.x[i]-corDataSet$Open.x[i+1])/corDataSet$Open.x[i+1])
+}
+y <- append(y,0)
+corDataSet$priceReturn <- unlist(y, use.names=FALSE)
+```
+
+### Building the prediction model
+After studying the linear relationship pictorially in the scatter plot and by computing correlations, we build the linear model.We build a linear model using all 3 regressors and entire dataset considering each day as one layer. 
+```{r}
+linearMod <- lm( priceReturn ~ count.x + count.y + ClosePrev, data=corDataSet) 
+summary(linearMod)
+AIC(linearMod)
+plot(residuals(linearMod))
+```
+
+### Summary and Conclusion 
 
