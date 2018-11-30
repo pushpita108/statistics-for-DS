@@ -2,8 +2,8 @@
 title: "Ethereum Token Analysis"
 author: "Pushpita Panigrahi(pxp171530), Akash Chand(axc173730), Siddharth Swarup Panda(ssp171730)"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -62,8 +62,8 @@ The price file for BNB token is read into a dataframe which contains the open, c
 
 ```{r}
 pricefile <-'bnb.txt'
-col_names <- c("Date","Open","High","Low","Close","Volume","MarketCap")
-myPrices <- read.csv( pricefile , header = TRUE, sep = "\t", dec = ".", col.names = col_names)
+col_names1 <- c("Date","Open","High","Low","Close","Volume","MarketCap")
+myPrices <- read.csv( pricefile , header = TRUE, sep = "\t", dec = ".", col.names = col_names1)
 myPrices$Date <- format(as.Date(myPrices$Date, format = "%m/%d/%Y"), "%Y-%m-%d")
 #head(myPrices)
 ```
@@ -201,15 +201,16 @@ activeUsers <- usersFreq[(usersFreq$freq>meanFreq),]
 ```
 
 ### Reading all other token data
-We go thorugh all the other tokens in given dataset and find out how many tokens each user buys/sells
+We go through all the other tokens in given dataset and find out how many tokens each user buys/sells
 ```{r}
-col_names <- c("FROMNODE","TONODE","DATE","TOKENAMOUNT")
-fpath<-"/Users/pushpitapanigrahi/Desktop/PushpitaFiles/Study/4.StatsForDS/Proj1/Ethereum token graphs"
+col_names2 <- c("FROMNODE","TONODE","DATE","TOKENAMOUNT")
+#fpath<-"/Users/pushpitapanigrahi/Desktop/PushpitaFiles/Study/4.StatsForDS/Proj1/Ethereum token graphs"
+fpath <- "D:/GitHub Projects/statistics-for-DS/Token Graphs"
 files <- list.files(path=fpath, pattern="*.txt", full.names=TRUE, recursive=FALSE)
 
 uniqueUsersForAllTokens <- list() #For every token a user transacts in, there is one entry of the userId in this list
 for(i in 1:length(files)){
-  t <- data.frame(read.csv( files[i], header = FALSE, sep = " ", dec = ".", col.names = col_names))
+  t <- data.frame(read.csv( files[i], header = FALSE, sep = " ", dec = ".", col.names = col_names2))
   tusers <- unique(append(t$FROMNODE, t$TONODE))
   uniqueUsersForAllTokens <- append(uniqueUsersForAllTokens,tusers)
 }
@@ -300,9 +301,13 @@ plot( timeBuyFreq$DATE, timeBuyFreq$count ,ylim=c(0, 633), main = "Unique buyer 
 We remove the outliers and merge the price and buyer counts to find the pearson correlation between the two fields with each day being a layer.
 ```{r}
 priceSellForEachDay <- merge(x=timePrices, y=timeBuyFreq, by.x=c("Date"), by.y = c("DATE"))
+
 newSet <- remove_outliers(priceSellForEachDay$count)
+
 maxCount = max(newSet[complete.cases(newSet)])
+
 minCount = min(newSet[complete.cases(newSet)])
+
 priceSellForEachDay <- subset(priceSellForEachDay, count<maxCount & count>minCount)
 #head(priceSellForEachDay)
 cor(priceSellForEachDay$Open, priceSellForEachDay$count, method=c("pearson"))
@@ -345,27 +350,117 @@ y2 <- append(y2,0)
 for(i in 2:nrow(priceSellForEachDay)){
   y2 <- append(y2,priceSellForEachDay$Close[i-1])
 }
+
 priceSellForEachDay$ClosePrev <- unlist(y2, use.names=FALSE)
+ 
+
+
 ```
 
 ### Merge all three regressors, and calculate price return, simple price return is given as  $$P_t − (P_t − 1)/P_t − 1$$
 ```{r}
 corDataSet <- merge(x= priceSellForEachDay, y=priceSellForEachDay1, by.x=c("Date"), by.y=c("Date"))
 y=list()
+#corDataSet
 for(i in 1:nrow(corDataSet)-1){
-  y <- append(y,(corDataSet$Open.x[i]-corDataSet$Open.x[i+1])/corDataSet$Open.x[i+1])
+  y <- append(y,(corDataSet$Open.x[i+1]-corDataSet$Open.x[i])/corDataSet$Open.x[i])
 }
 y <- append(y,0)
+
 corDataSet$priceReturn <- unlist(y, use.names=FALSE)
+#corDataSet1 <- corDataSet$priceReturn
+#corDataSet
+#corDataSet
+
+```
+
+```{r}
+#corDataSet1 <- corDataSet
+#corDataSet
+y007=list()
+y007 <- append(y007,0)
+for(i in 2:nrow(corDataSet)){
+  y007 <- append(y007,corDataSet$priceReturn[i-1])
+ # corDataSet$priceReturn[i-1]
+}
+#y1
+#y007 <- append(y007,0)
+#head(y007)
+corDataSet$priceReturn1 <- unlist(y007, use.names=FALSE)
+#corDataSet 
+```
+
+```{r}
+y008=list()
+y008 <- append(y008,0)
+y008 <- append(y008,0)
+for(i in 3:nrow(corDataSet)){
+  y008 <- append(y008,corDataSet$priceReturn[i-2])
+ # corDataSet$priceReturn[i-1]
+}
+#head(y008)
+corDataSet$priceReturn2 <- unlist(y008, use.names=FALSE)
+#corDataSet 
+```
+
+```{r}
+y009=list()
+y009 <- append(y009,0)
+y009 <- append(y009,0)
+y009 <- append(y009,0)
+for(i in 4:nrow(corDataSet)){
+  y009 <- append(y009,corDataSet$priceReturn[i-3])
+ # corDataSet$priceReturn[i-1]
+}
+#head(y008)
+corDataSet$priceReturn3 <- unlist(y009, use.names=FALSE)
+```
+
+```{r}
+#require(dplyr)
+#corDataSet
+#corDataSet<- subset(corDataSet, top_n(80))
+#corDataSet <- corDataSet %>% top_n(200)
+#corDataSet<- corDataSet %>% slice(50:120)
+#nrow(corDataSet)>1
+#corDataSet
+cor(corDataSet$priceReturn, corDataSet$count.x, method=c("pearson"))
+#cor(corDataSet$priceReturn, corDataSet$Open.x, method=c("pearson"))
+#cor(corDataSet$priceReturn, corDataSet$count.y, method=c("pearson"))
+#cor(corDataSet$priceReturn, corDataSet$ClosePrev, method=c("pearson"))
+#cor(corDataSet$priceReturn, corDataSet$priceReturn1, method=c("pearson"))
+#cor(corDataSet$priceReturn, corDataSet$priceReturn2, method=c("pearson"))
+#print("variance")
+#var(corDataSet$count.x) 
+#for ()
+
+
 ```
 
 ### Building the prediction model
 After studying the linear relationship pictorially in the scatter plot and by computing correlations, we build the linear model.We build a linear model using all 3 regressors and entire dataset considering each day as one layer. 
 ```{r}
-linearMod <- lm( priceReturn ~ count.x + count.y + ClosePrev, data=corDataSet) 
-summary(linearMod)
-AIC(linearMod)
-plot(residuals(linearMod))
+x<-0
+
+for(x in  seq(50, 200, 30)){
+  print(x)
+  linearMod <- lm( priceReturn ~   Open.x +count.y+ ClosePrev + priceReturn1, data=(corDataSet %>% slice(x:(x+54))))
+  summary(linearMod)
+  #x=x+50
+  }
+#AIC(linearMod)
+#summary(linearMod)
+#linearMod0 <- lm( priceReturn ~   Open.x +count.y+ ClosePrev + priceReturn1, data=(corDataSet %>% slice(1:50)))
+  #summary(linearMod0)
+  #linearMod1 <- lm( priceReturn ~   Open.x +count.y+ ClosePrev + priceReturn1, data=(corDataSet %>% slice(51:102)))
+  #summary(linearMod1)
+  linearMod2 <- lm( priceReturn ~   Open.x +count.y+ ClosePrev + priceReturn1 +priceReturn2 + priceReturn3, data=(corDataSet %>% slice(120:165)))
+  summary(linearMod2)
+  #linearMod3 <- lm( priceReturn ~   Open.x +count.y+ ClosePrev + priceReturn1, data=(corDataSet %>% slice(161:254)))
+  #summary(linearMod3)
+  
+
+#plot(residuals(linearMod))
 ```
 
 ### Summary and Conclusion 
