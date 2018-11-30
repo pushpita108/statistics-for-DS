@@ -205,7 +205,8 @@ We go through all the other tokens in given dataset and find out how many tokens
 ```{r}
 col_names2 <- c("FROMNODE","TONODE","DATE","TOKENAMOUNT")
 #fpath<-"/Users/pushpitapanigrahi/Desktop/PushpitaFiles/Study/4.StatsForDS/Proj1/Ethereum token graphs"
-fpath <- "D:/GitHub Projects/statistics-for-DS/Token Graphs"
+#fpath <- "D:/GitHub Projects/statistics-for-DS/Token Graphs"
+fpath <- "B:/study/Fall 2018/Stats for DS/Project1/Datasets/Ethereum token graphs"
 files <- list.files(path=fpath, pattern="*.txt", full.names=TRUE, recursive=FALSE)
 
 uniqueUsersForAllTokens <- list() #For every token a user transacts in, there is one entry of the userId in this list
@@ -311,10 +312,11 @@ minCount = min(newSet[complete.cases(newSet)])
 priceSellForEachDay <- subset(priceSellForEachDay, count<maxCount & count>minCount)
 #head(priceSellForEachDay)
 cor(priceSellForEachDay$Open, priceSellForEachDay$count, method=c("pearson"))
+head(priceSellForEachDay)
 ```
 
 ### Study 2: Conclusion
-We find a very strong positive correlation between the number of people buying BNB token in a day to the price of the token that day. This menas that user decisions get highly effected by the opening price of bnb token on that day.
+We find a very strong positive correlation between the number of people buying BNB token in a day to the price of the token that day. This means that user decisions get highly effected by the opening price of bnb token on that day.
 So we combine both plots to visualize the correlation. 
 
 ```{r}
@@ -322,6 +324,16 @@ So we combine both plots to visualize the correlation.
 p1 <- ggplot(priceSellForEachDay, aes(Date, count)) + geom_line() + theme_minimal() + 
       theme(axis.title.x = element_blank(), axis.text.x = element_blank())
 p2 <- ggplot(priceSellForEachDay,aes(Date, Open)) + geom_bar(stat="identity") + theme_minimal() + 
+      theme(axis.title.x = element_blank(),axis.text.x = element_text(angle=90))
+grid.newpage()
+grid.draw(rbind(ggplotGrob(p1), ggplotGrob(p2), size = "last"))
+```
+
+```{r}
+#' Create the two plots.
+p1 <- ggplot(priceSellForEachDay, aes(factor(format(Date, "%Y-%m")), count)) + geom_bar(stat="identity") + theme_minimal() + 
+      theme(axis.title.x = element_blank(), axis.text.x = element_text(angle=90))
+p2 <- ggplot(priceSellForEachDay,aes(factor(format(Date, "%Y-%m")), Open)) + geom_bar(stat="identity") + theme_minimal() + 
       theme(axis.title.x = element_blank(),axis.text.x = element_text(angle=90))
 grid.newpage()
 grid.draw(rbind(ggplotGrob(p1), ggplotGrob(p2), size = "last"))
@@ -424,12 +436,12 @@ corDataSet$priceReturn3 <- unlist(y009, use.names=FALSE)
 #corDataSet<- corDataSet %>% slice(50:120)
 #nrow(corDataSet)>1
 #corDataSet
-cor(corDataSet$priceReturn, corDataSet$count.x, method=c("pearson"))
-#cor(corDataSet$priceReturn, corDataSet$Open.x, method=c("pearson"))
-#cor(corDataSet$priceReturn, corDataSet$count.y, method=c("pearson"))
-#cor(corDataSet$priceReturn, corDataSet$ClosePrev, method=c("pearson"))
-#cor(corDataSet$priceReturn, corDataSet$priceReturn1, method=c("pearson"))
-#cor(corDataSet$priceReturn, corDataSet$priceReturn2, method=c("pearson"))
+cor(highCorData$priceReturn, highCorData$count.x, method=c("pearson"))
+cor(highCorData$count.x, highCorData$Open.x, method=c("pearson"))
+cor(highCorData$priceReturn, highCorData$count.y, method=c("pearson"))
+cor(highCorData$priceReturn, highCorData$ClosePrev, method=c("pearson"))
+cor(highCorData$priceReturn, highCorData$priceReturn1, method=c("pearson"))
+cor(highCorData$priceReturn, highCorData$priceReturn2, method=c("pearson"))
 #print("variance")
 #var(corDataSet$count.x) 
 #for ()
@@ -462,6 +474,15 @@ for(x in  seq(50, 200, 30)){
 
 #plot(residuals(linearMod))
 ```
+
+```{r}
+highCorData <- subset(corDataSet, format.Date(Date, "%m")=="01")
+linearMod2 <- lm( priceReturn ~   Open.x +count.y+ ClosePrev + priceReturn1 +priceReturn2 + priceReturn3, data=highCorData)
+  summary(linearMod2)
+  plot(residuals(linearMod2))
+```
+
+
 
 ### Summary and Conclusion 
 
